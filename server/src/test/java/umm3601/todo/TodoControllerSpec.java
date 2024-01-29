@@ -1,6 +1,7 @@
 package umm3601.todo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,14 +80,81 @@ public class TodoControllerSpec {
   }
 
 
-
-  /**
-   * @throws IOException
-   */
   @Test
   public void canGetAllTodosWithStatusTrue(){
-    //
+    // Add a query param map to the context that maps "status"
+    // to "true".
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("status", Arrays.asList(new String[] {"true"}));
+    // Tell the mock `ctx` object to return our query
+    // param map when `queryParamMap()` is called.
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+
+    // Call the method on the mock controller with the added
+    // query param map to limit the result to just todos with
+    // status true.
+    todoController.getTodos(ctx);
+
+    // Confirm that all the todos passed to `json` have status true.
+    verify(ctx).json(todoArrayCaptor.capture());
+    for (Todo todo : todoArrayCaptor.getValue()) {
+      assertTrue(todo.status);
+    }
+    // Confirm that there are 143 todos with status true
+    assertEquals(143, todoArrayCaptor.getValue().length);
   }
+
+
+
+
+  /**
+   * Confirm that we get a todo when using a valid user ID.
+   *
+   * @throws IOException if there are problems reading from the "database" file.
+   */
+  @Test
+  public void canGetTodoWithSpecifiedId() throws IOException {
+    // A specific todo ID known to be in the "database".
+    String id = "58895985a22c04e761776d54";
+    // Get the user associated with that ID.
+    Todo user = db.getTodo(id);
+
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    todoController.getTodo(ctx);
+
+    verify(ctx).json(user);
+    verify(ctx).status(HttpStatus.OK);
+  }
+
+  /**
+   * Confirm that we get a 404 Not Found response when
+   * we request a todo ID that doesn't exist.
+   *
+   * @throws IOException if there are problems reading from the "database" file.
+   */
+  @Test
+  public void respondsAppropriatelyToRequestForNonexistentId() throws IOException {
+    when(ctx.pathParam("id")).thenReturn(null);
+    Throwable exception = Assertions.assertThrows(NotFoundResponse.class, () -> {
+      todoController.getTodo(ctx);
+    });
+    assertEquals("No todo with the id " + null + " was found.", exception.getMessage());
+  }
+
+
+  @Test
+  public void canGetTodoByOwner() {
+  String ownerToFilter = "Fry";
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put("owner", Arrays.asList(ownerToFilter));
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  todoController.getTodos(ctx);
+  verify(ctx).json(todoArrayCaptor.capture());
+  for (Todo todo : todoArrayCaptor.getValue()) { assertEquals(ownerToFilter, todo.owner);
+  }
+  assertEquals(61, todoArrayCaptor.getValue().length); }
+
 
 
 }
