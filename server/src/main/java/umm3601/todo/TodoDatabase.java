@@ -63,11 +63,17 @@ public Todo getTodo(String id) {
         filteredTodos = filteredTodosByStatus(filteredTodos, bool);
     }
 
-    // Filter body is defined
+    /*  Filter body is defined
     if (queryParams.containsKey("body")) {
       String targetBody = queryParams.get("body").get(0);
       filteredTodos = filterTodosByBody(filteredTodos, targetBody);
     }
+    */
+    if (queryParams.containsKey("contains")) {
+      String targetBody = queryParams.get("contains").get(0);
+      filteredTodos = filterTodosByContains(filteredTodos, targetBody);
+    }
+
     // Filter category is defined
     if (queryParams.containsKey("category")) {
       String targetCategory = queryParams.get("category").get(0);
@@ -113,9 +119,7 @@ public Todo getTodo(String id) {
     @return               an array of all the todos from the given list that have the target body
   */
 
-  //Doesn't Work
-
-  public Todo[] filterTodosByBody(Todo[] todos, String targetBody) {
+  public Todo[] filterTodosByContains(Todo[] todos, String targetBody) {
       return Arrays.stream(todos).filter(x -> x.body.contains(targetBody)).toArray(Todo[]::new);
     }
 
