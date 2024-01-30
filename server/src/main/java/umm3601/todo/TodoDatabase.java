@@ -130,9 +130,8 @@ public Todo getTodo(String id) {
   */
 
   public Todo[] filterTodosByCategory(Todo[] todos, String targetCategory) {
-    return Arrays.stream(todos).filter
-    (x -> x.category.toLowerCase().equals
-    (targetCategory.toLowerCase())).toArray(Todo[]::new);
+    return Arrays.stream(todos).filter(x ->
+    x.category.toLowerCase().equals(targetCategory.toLowerCase())).toArray(Todo[]::new);
   }
 
 

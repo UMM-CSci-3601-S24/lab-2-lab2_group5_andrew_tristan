@@ -61,7 +61,7 @@ public class TodoControllerSpec {
 
   @Test
   public void buildControllerFailsWithIllegalDbFile() {
-    Assertions.assertThrows(IOException.class, ()-> {
+    Assertions.assertThrows(IOException.class, () -> {
       TodoController.buildTodoController("this is not a legal file name");
     });
   }
