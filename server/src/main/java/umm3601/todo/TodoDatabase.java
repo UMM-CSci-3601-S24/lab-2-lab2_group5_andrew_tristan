@@ -87,7 +87,7 @@ public Todo getTodo(String id) {
       }
     }
 
-    if (queryParams.containsKey("orderBy")){
+    if (queryParams.containsKey("orderBy")) {
 
         String targetOrder = queryParams.get("orderBy").get(0);
         if (targetOrder.equals("owner")) {
