@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +85,22 @@ public Todo getTodo(String id) {
       if (filteredTodos.length > limit) {
         filteredTodos = Arrays.copyOfRange(filteredTodos, 0, limit);
       }
+    }
+
+    if (queryParams.containsKey("orderBy")){
+
+        String targetOrder = queryParams.get("orderBy").get(0);
+        if (targetOrder.equals("owner")) {
+          Arrays.sort(filteredTodos, Comparator.comparing(x -> x.owner));
+        } else if (targetOrder.equals("category")) {
+          Arrays.sort(filteredTodos, Comparator.comparing(x -> x.category));
+        } else if (targetOrder.equals("body")) {
+          Arrays.sort(filteredTodos, Comparator.comparing(x -> x.body));
+        } else if (targetOrder.equals("status")) {
+          Arrays.sort(filteredTodos, Comparator.comparing(x -> x.status));
+        } else {
+          Arrays.sort(filteredTodos, Comparator.comparing(x -> x._id));
+        }
     }
 
     return filteredTodos;
