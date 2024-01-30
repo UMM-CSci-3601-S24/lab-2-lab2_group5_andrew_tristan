@@ -3,7 +3,6 @@ package umm3601.todo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ public class TodoDatabase {
     allTodos = objectMapper.readValue(reader, Todo[].class);
   }
 
-  public int size(){
+  public int size() {
     return allTodos.length;
   }
 /**
@@ -43,7 +42,7 @@ public Todo getTodo(String id) {
   @param queryParams
   @return
 */
-  public Todo[] listTodos(Map<String,List<String>> queryParams) {
+  public Todo[] listTodos(Map<String, List<String>> queryParams) {
     Todo[] filteredTodos = allTodos;
 
     // Filter owner is defined
@@ -77,13 +76,13 @@ public Todo getTodo(String id) {
     // Filter category is defined
     if (queryParams.containsKey("category")) {
       String targetCategory = queryParams.get("category").get(0);
-      filteredTodos = filterTodosByCategory(filteredTodos,targetCategory);
+      filteredTodos = filterTodosByCategory(filteredTodos, targetCategory);
     }
 
     if (queryParams.containsKey("limit")) {
       int limit = Integer.parseInt(queryParams.get("limit").get(0));
       if (filteredTodos.length > limit) {
-        filteredTodos = Arrays.copyOfRange(filteredTodos,0,limit);
+        filteredTodos = Arrays.copyOfRange(filteredTodos, 0, limit);
       }
     }
 
@@ -131,7 +130,9 @@ public Todo getTodo(String id) {
   */
 
   public Todo[] filterTodosByCategory(Todo[] todos, String targetCategory) {
-    return Arrays.stream(todos).filter(x -> x.category.toLowerCase().equals(targetCategory.toLowerCase())).toArray(Todo[]::new);
+    return Arrays.stream(todos).filter
+    (x -> x.category.toLowerCase().equals
+    (targetCategory.toLowerCase())).toArray(Todo[]::new);
   }
 
 

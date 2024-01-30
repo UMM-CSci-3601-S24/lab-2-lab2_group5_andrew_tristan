@@ -43,7 +43,7 @@ public static TodoController buildTodoController(String todoDataFile) throws IOE
 public void getTodo(Context ctx) {
   String id = ctx.pathParam("id");
   Todo todo = todoDatabase.getTodo(id);
-  if (todo != null){
+  if (todo != null) {
     ctx.json(todo);
     ctx.status(HttpStatus.OK);
   } else {

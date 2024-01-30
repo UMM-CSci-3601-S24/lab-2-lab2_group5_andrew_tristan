@@ -2,7 +2,6 @@ package umm3601.todo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +21,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import io.javalin.Javalin;
-import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
@@ -62,7 +60,7 @@ public class TodoControllerSpec {
   }
 
   @Test
-  public void buildControllerFailsWithIllegalDbFile(){
+  public void buildControllerFailsWithIllegalDbFile() {
     Assertions.assertThrows(IOException.class, ()-> {
       TodoController.buildTodoController("this is not a legal file name");
     });
@@ -81,7 +79,7 @@ public class TodoControllerSpec {
 
 
   @Test
-  public void canGetAllTodosWithStatusTrue(){
+  public void canGetAllTodosWithStatusTrue() {
     // Add a query param map to the context that maps "status"
     // to "true".
     Map<String, List<String>> queryParams = new HashMap<>();
@@ -151,7 +149,8 @@ public class TodoControllerSpec {
   when(ctx.queryParamMap()).thenReturn(queryParams);
   todoController.getTodos(ctx);
   verify(ctx).json(todoArrayCaptor.capture());
-  for (Todo todo : todoArrayCaptor.getValue()) { assertEquals(ownerToFilter, todo.owner);
+  for (Todo todo : todoArrayCaptor.getValue()) {
+    assertEquals(ownerToFilter, todo.owner);
   }
   assertEquals(61, todoArrayCaptor.getValue().length); }
 
