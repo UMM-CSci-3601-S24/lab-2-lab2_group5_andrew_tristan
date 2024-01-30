@@ -154,6 +154,64 @@ public class TodoControllerSpec {
   }
   assertEquals(61, todoArrayCaptor.getValue().length); }
 
+  @Test
+public void canFilterTodosByContains() {
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put("contains", Arrays.asList(new String[] {"some string"}));
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  todoController.getTodos(ctx);
+  verify(ctx).json(todoArrayCaptor.capture());
+  for (Todo todo : todoArrayCaptor.getValue()) {
+    assertTrue(todo.body.contains("some string"));
+  }
+}
 
+@Test
+public void canFilterTodosByCategory() {
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put("category", Arrays.asList(new String[] {"software design"}));
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  todoController.getTodos(ctx);
+  verify(ctx).json(todoArrayCaptor.capture());
+  for (Todo todo : todoArrayCaptor.getValue()) {
+    assertEquals("software design", todo.category);
+  }
+}
+
+@Test
+public void canLimitNumberOfTodos() {
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put("limit", Arrays.asList(new String[] {"5"}));
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  todoController.getTodos(ctx);
+  verify(ctx).json(todoArrayCaptor.capture());
+  assertEquals(5, todoArrayCaptor.getValue().length);
+}
+
+@Test
+public void canOrderTodosByOwner() {
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put("orderBy", Arrays.asList(new String[] {"owner"}));
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  todoController.getTodos(ctx);
+  verify(ctx).json(todoArrayCaptor.capture());
+  Todo[] todos = todoArrayCaptor.getValue();
+  for (int i = 0; i < todos.length - 1; i++) {
+    assertTrue(todos[i].owner.compareTo(todos[i + 1].owner) <= 0);
+  }
+}
+
+@Test
+public void canOrderTodosByCategory() {
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put("orderBy", Arrays.asList(new String[] {"category"}));
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  todoController.getTodos(ctx);
+  verify(ctx).json(todoArrayCaptor.capture());
+  Todo[] todos = todoArrayCaptor.getValue();
+  for (int i = 0; i < todos.length - 1; i++) {
+    assertTrue(todos[i].category.compareTo(todos[i + 1].category) <= 0);
+  }
+}
 
 }
